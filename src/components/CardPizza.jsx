@@ -1,6 +1,6 @@
 const CardPizza = ({ name, price, ingredients, img }) => {
   return (
-    <div className="card" style={{ width: "100%" }}>
+    <div className="card">
       <img src={img} className="card-img-top" alt={name} />
       <div className="card-body">
         <h5 className="card-title">{name}</h5>
@@ -10,8 +10,10 @@ const CardPizza = ({ name, price, ingredients, img }) => {
             <li key={index}>{ingredient}</li>
           ))}
         </ul>
-        <button className="btn btn-primary">Ver más</button>
-        <button className="btn btn-secondary">Añadir</button>
+        <div className="btn-container">
+          <button className="btn btn-primary">Ver más</button>
+          <button className="btn btn-secondary">Añadir</button>
+        </div>
       </div>
     </div>
   );

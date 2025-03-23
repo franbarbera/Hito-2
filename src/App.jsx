@@ -1,29 +1,67 @@
 import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import Footer from "./components/Footer";
-import RegisterPage from "./components/RegisterPage";
-import LoginPage from "./components/LoginPage";
+import { pizzaCart } from "./data/pizzas.js";
+import "./App.css";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [token, setToken] = useState(false);
+  const [cart, setCart] = useState(pizzaCart);
+
+  const handleIncrease = (id) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, count: item.count + 1 } : item
+      )
+    );
+  };
+
+  const handleDecrease = (id) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.id === id ? { ...item, count: item.count - 1 } : item
+        )
+        .filter((item) => item.count > 0)
+    );
+  };
+
+  const total = cart.reduce((acc, item) => acc + item.price * item.count, 0);
 
   return (
-    <div>
-      <Navbar
-        setCurrentPage={setCurrentPage}
-        token={token}
-        setToken={setToken}
-      />
-      {currentPage === "home" && <Home />}
-      {currentPage === "register" && (
-        <RegisterPage setCurrentPage={setCurrentPage} setToken={setToken} />
+    <div className="App">
+      <header>
+        <h1>Pizzería Mamma Mía 🍕</h1>
+      </header>
+
+      <div>
+        {cart.length > 0 ? (
+          cart.map((item) => (
+            <div key={item.id} className="card">
+              <img src={item.img} alt={item.name} />
+              <h2>{item.name}</h2>
+              <p>${item.price.toLocaleString("es-CL")}</p>
+              <p>Cantidad: {item.count}</p>
+              <div>
+                <button onClick={() => handleIncrease(item.id)}>➕</button>
+                <button onClick={() => handleDecrease(item.id)}>➖</button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p style={{ color: "#fff", textAlign: "center" }}>
+            No hay pizzas en el carrito 🍕
+          </p>
+        )}
+      </div>
+
+      {cart.length > 0 && (
+        <div>
+          <p className="total">Total: ${total.toLocaleString("es-CL")}</p>
+          <button className="pay-button">Pagar</button>
+        </div>
       )}
-      {currentPage === "login" && (
-        <LoginPage setToken={setToken} setCurrentPage={setCurrentPage} />
-      )}
-      <Footer />
+
+      <footer>
+        © 2021 - Pizzería Mamma Mía! - Todos los derechos reservados
+      </footer>
     </div>
   );
 }
